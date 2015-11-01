@@ -1,0 +1,15 @@
+This bundle contains the files needed for Lecture 9. 
+
+The main file is DeclareSubstitution.hs. However, before we can 
+use that file we should first create the parser for expressions.
+This can be done as follows:
+
+> happy DeclareParse.y
+
+After this command is executed in the console, a DeclareParse.hs file 
+should be available.
+
+Now we can load DeclareSubstitution.hs on ghci:
+
+> ghci DeclareSubstitution.hs
+
