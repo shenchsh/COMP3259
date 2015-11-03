@@ -63,8 +63,16 @@ prog2 =
     Program [("fact", Function [("x", TInt)] (If (Bin EQ (Var "x") (Lit (IntV 0))) (Lit (IntV 1)) (Bin Mult (Var "x") (Call "fact" [Bin Sub (Var "x") (Lit (IntV 1))])))
         )] (Call "fact" [Lit (IntV (5))])
 
-
+prog3 :: Program
+prog3 =
+    Program [("fact", Function [("x", TInt)] (If (Bin EQ (Var "x") (Lit (IntV 0))) (Lit (IntV 1)) (Bin Mult (Var "x") (Bin Sub (Var "x") (Lit (IntV 1)))))
+        )] (Lit (IntV (5)))
 -- Pretty printer
+
+prog4 :: Program
+prog4 =
+    Program [("fact", Function [("x", TInt)] (If (Bin EQ (Var "x") (Lit (IntV 0))) (Lit (IntV 1)) (Bin Mult (Var "x") (Call "fact" [Bin Sub (Var "x") (Lit (IntV 1))])))
+        )] (Lit (IntV (5)))
 
 instance Show Program where
     show (Program fenv e) = -- error "TODO: Question 4"

@@ -26,17 +26,48 @@ tbinary GT  TInt  TInt  = Just TBool
 tbinary EQ  t1    t2    | t1 == t2 = Just TBool
 tbinary _ _ _ = Nothing
 
+-- data Program = Program FunEnv Exp
+-- 
+-- type FunEnv = [(String, Function)]
+-- 
+-- data Function = Function [(String, Type)] Exp
 
+-- type TEnv = [(String,Type)]
+
+-- type TFunEnv = [(String, (TEnv, Type))]
 
 checkFunEnv :: FunEnv -> Maybe TFunEnv
 checkFunEnv fds = checkFunEnv1 fds [] -- starts with an empty function type environment
   where
     checkFunEnv1 :: FunEnv -> TFunEnv -> Maybe TFunEnv
-    checkFunEnv1 = error "TODO: Question 6"
+    checkFunEnv1 [] tfenv = Just tfenv
+    checkFunEnv1 ((s, Function tenv e):xs) tfenv =
+        case returnType of
+            Nothing -> Nothing
+            Just a -> checkFunEnv1 xs newTfenv
+                        where 
+                            newTfenv = (s, (tenv, a)):tfenv
+        where
+            returnType = tcheck e tenv tfenv
+    -- checkFunEnv1 = error "TODO: Question 6"
 
 
+            
 tcheck :: Exp -> TEnv -> TFunEnv -> Maybe Type
-tcheck (Call name args) tenv fenv = error "TODO: Question 7"
+tcheck (Call name args) tenv fenv = 
+    case lookup name fenv of
+        Nothing -> Nothing
+        Just (tempTEnv, returnType) ->
+            case (comp tempTEnv args) of
+                False -> Nothing
+                True -> Just returnType
+            where
+                comp :: TEnv -> [Exp] -> Bool
+                comp [] [] = True
+                comp ((s, t):xs) (y:ys) = if (Just t == tcheck y tenv fenv) then comp xs ys else False
+
+
+-- error "TODO: Question 7"
 tcheck (Lit v) _ _ =
   case v of
     IntV _ -> Just TInt
@@ -68,4 +99,11 @@ tcheck (Decl v e1 e2) tenv fenv =
 
 
 checkProgram :: Program -> Bool
-checkProgram = error "TODO: Question 8"
+checkProgram (Program funEnv main) =
+    case checkFunEnv funEnv of
+        Just tfe -> case (tcheck main [] tfe) of
+                        Just t -> True
+                        Nothing -> False
+        Nothing -> False
+
+-- error "TODO: Question 8"
